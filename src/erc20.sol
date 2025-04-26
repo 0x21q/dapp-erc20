@@ -43,31 +43,30 @@ contract ERC20bda is IERC20 {
 
     mapping(address => uint256) limits;
 
-    uint256 totalSupply = 0;
-    uint256 maxSupply;
-    address[] mintingAdmins;
-    address[] restrAdmins;
-    uint256 maxDailyLimit;
-    uint256 dailyMinted = 0; // TODO: needs to be restarted every day
+    uint256 public override totalSupply = 0;
+    uint256 private maxSupply;
+    address[] private mintingAdmins;
+    address[] private restrAdmins;
+    uint256 private maxDailyLimit;
+    uint256 private dailyMinted = 0; // TODO: needs to be restarted every day
 
-    modifier checkDailyLimit(uint256 maxDailyLimit, uint256 maxSupply) {
-        if (maxDailyLimit > maxSupply) {
+    modifier checkDailyLimit(uint256 _maxDailyLimit, uint256 _maxSupply) {
+        if (_maxDailyLimit > _maxSupply) {
             revert("Maximum daily limit cannot be larger than maximum supply.");
         }
         _;
     }
 
     constructor(
-        uint256 memory _maxSupply,
+        uint256 _maxSupply,
+        uint256 _maxDailyLimit,
         address[] memory _mintingAdmins,
-        uint256 memory _maxDailyLimit,
-        address[] memory _restrAdmins,
+        address[] memory _restrAdmins
     ) checkDailyLimit(_maxDailyLimit, _maxSupply) {
         maxSupply = _maxSupply;
-        mintingAdmins = _mintingAdmins;
         maxDailyLimit = _maxDailyLimit;
+        mintingAdmins = _mintingAdmins;
         restrAdmins = _restrAdmins;
-        balances[msg.sender] = totalSupply; // not sure what this does
     }
 
     function mintTokens(address receiver, uint256 numTokens) public returns (bool) {
@@ -76,7 +75,7 @@ contract ERC20bda is IERC20 {
         require(totalSupply + numTokens <= maxSupply);
 
         // check if sender has minting admin role
-        bool memory isAdmin = false;
+        bool isAdmin = false;
         for(uint i = 0; i < mintingAdmins.length; i++) {
             if (msg.sender == mintingAdmins[i]) {
                 isAdmin = true;
@@ -92,10 +91,6 @@ contract ERC20bda is IERC20 {
         emit Transfer(address(0x0), receiver, numTokens);
 
         return true;
-    }
-
-    function totalSupply() public view override returns (uint256) {
-        return totalSupply;
     }
 
     function balanceOf(
