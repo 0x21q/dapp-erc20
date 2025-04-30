@@ -19,19 +19,3 @@ export const config = createConfig({
 
 // Define contract address
 export const CONTRACT_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F' as `0x${string}`;
-
-// ERC20 ABI for transfer function
-export const erc20ABI = [
-  {
-    "constant": false,
-    "inputs": [
-      { "name": "_to", "type": "address" },
-      { "name": "_value", "type": "uint256" }
-    ],
-    "name": "transfer",
-    "outputs": [{ "name": "", "type": "bool" }],
-    "type": "function"
-  }
-] as const;
-
-

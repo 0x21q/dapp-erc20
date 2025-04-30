@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useAccount, useConnect, useDisconnect, useBalance, useWriteContract } from 'wagmi';
 import { parseUnits, formatUnits } from 'viem';
 import { CONTRACT_ADDRESS } from '../config';
+import { accessControlAbi, useWriteErc20BdaTransfer } from '../generated';
 
-export default function HomePage() {
+export default function DashboardPage() {
     // wallet hook
     const account = useAccount();
     
@@ -35,12 +36,10 @@ export default function HomePage() {
         try {
             // Convert amount to wei (using standard 18 decimal places)
             const value = parseUnits(amount, 18);
-            writeContract({
-                address: CONTRACT_ADDRESS as `0x${string}`,
-                abi: erc20ABI,
-                functionName: 'transfer',
-                args: [recipient, value],
-            });
+            //useWriteErc20BdaTransfer({
+                //address: CONTRACT_ADDRESS as `0x${string}`,
+                //args: [recipient, value]
+            //});
         } catch (error) {
             console.error('Transfer error:', error);
         }
