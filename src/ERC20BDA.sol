@@ -3,10 +3,10 @@ pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/extensions/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract ERC20BDA is ERC20Capped, AccessControl {
+contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
     // roles
     bytes32 public constant mintingAdmin = keccak256("MINTING_ADMIN_ROLE");
     bytes32 public constant restrAdmin = keccak256("RESTR_ADMIN_ROLE");
@@ -166,16 +166,16 @@ contract ERC20BDA is ERC20Capped, AccessControl {
         string memory message = string(
             abi.encodePacked(
                 "User with address ",
-                msg.sender.toHexString(),
+                Strings.toHexString(uint256(uint160(msg.sender)), 20),
                 " has verified their identity at ",
-                timestamp.toString()
+                Strings.toString(timestamp)
             )
         );
 
         bytes32 messageHash = keccak256(
             abi.encodePacked(
                 "\x19Ethereum Signed Message:\n",
-                bytes(message).length.toString(),
+                Strings.toString(bytes(message).length),
                 message
             )
         );
