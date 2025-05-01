@@ -11,6 +11,8 @@ import { CONTRACT_ADDRESS } from "../config";
 import { erc20BdaAbi } from "../generated";
 
 export default function DashboardPage() {
+  const [hasVerifiedAccount] = useState(true);
+
   // wallet hook
   const account = useAccount();
 
@@ -45,12 +47,11 @@ export default function DashboardPage() {
 
     try {
       // Convert amount to wei (using standard 18 decimal places)
-      const value = parseUnits(amount, 18);
       writeContract({
         address: CONTRACT_ADDRESS as `0x${string}`,
         abi: erc20BdaAbi,
         functionName: "transfer",
-        args: [recipient as `0x${string}`, value],
+        args: [recipient as `0x${string}`, parseUnits(amount ,18)],
       });
     } catch (error) {
       console.error("Transfer error:", error);
@@ -80,6 +81,7 @@ export default function DashboardPage() {
       {/* connect wallet subsection */}
       <div className="subsection">
         <h2>Connect Wallet</h2>
+        {status && <p>Status: {status}</p>}
         <div className="connect-buttons">
           {connectors.map((connector) => (
             <button
@@ -92,12 +94,11 @@ export default function DashboardPage() {
             </button>
           ))}
         </div>
-        {status && <p>Status: {status}</p>}
         {error && <p className="error-message">Error: {error.message}</p>}
       </div>
 
       {/* token transfer subsection */}
-      {account.status === "connected" && (
+      {account.status === "connected" && hasVerifiedAccount && (
         <div className="subsection">
           <h2>Token Transfer</h2>
           <form onSubmit={handleTransfer} className="form">

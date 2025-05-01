@@ -52,12 +52,18 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
     );
     event ProposalApproved(uint256 proposalId, address approver);
     event ProposalExecuted(uint256 proposalId);
+
+    event AddedIdentityProvider(address indexed idpAddress);
+    event RemovedIdentityProvider(address indexed idpAddress);
     event AddressVerifiedIDP(address indexed account, uint256 timestamp);
     event AddressVerifiedAdmin(address indexed account, uint256 timestamp);
+
     event AddressRevoked(address indexed account);
     event AddressBlocked(address indexed account);
     event AddressUnblocked(address indexed account);
-    event TransferRestrictionCreated(address indexed account, uint256 limit);
+
+    event TransferRestrictionSet(address indexed account, uint256 limit);
+    event TransferRestrictionUnset(address indexed account);
 
     // other transaction related events are already emitted from openzeppelin
 
@@ -129,7 +135,14 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
             amountTransferred: 0,
             lastReset: block.timestamp
         });
-        emit TransferRestrictionCreated(account, limit);
+        emit TransferRestrictionSet(account, limit);
+    }
+
+    function unsetTransferLimit(
+        address account
+    ) external onlyRole(restrAdmin) {
+        delete transferLimits[account];
+        emit TransferRestrictionUnset(account);
     }
 
     function addIdentityProvider(
@@ -138,6 +151,7 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
         require(!isAddressIDP[idpAddress], "Address is already an IDP");
         identityProviders.push(idpAddress);
         isAddressIDP[idpAddress] = true;
+        emit AddedIdentityProvider(idpAddress);
     }
 
     function removeIdentityProvider(
@@ -155,6 +169,7 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
             }
         }
         isAddressIDP[idpAddress] = false;
+        emit RemovedIdentityProvider(idpAddress);
     }
 
     // based on the https://solidity-by-example.org/signature/

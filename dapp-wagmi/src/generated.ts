@@ -870,6 +870,13 @@ export const erc20BdaAbi = [
   },
   {
     type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'unsetTransferLimit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
     inputs: [{ name: '', internalType: 'address', type: 'address' }],
     name: 'verificationTimestamp',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
@@ -891,6 +898,19 @@ export const erc20BdaAbi = [
     name: 'verifyIdentity',
     outputs: [],
     stateMutability: 'nonpayable',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'idpAddress',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'AddedIdentityProvider',
   },
   {
     type: 'event',
@@ -1062,6 +1082,19 @@ export const erc20BdaAbi = [
     type: 'event',
     anonymous: false,
     inputs: [
+      {
+        name: 'idpAddress',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'RemovedIdentityProvider',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
       { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
       {
         name: 'previousAdminRole',
@@ -1150,7 +1183,20 @@ export const erc20BdaAbi = [
         indexed: false,
       },
     ],
-    name: 'TransferRestrictionCreated',
+    name: 'TransferRestrictionSet',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'TransferRestrictionUnset',
   },
   { type: 'error', inputs: [], name: 'AccessControlBadConfirmation' },
   {

@@ -11,11 +11,11 @@ const router = createBrowserRouter([
     path: "/",
     element: <Navigation />,
     children: [
-      { index: true, element: <DashboardPage /> }, // Tasks 4,6,8
+      { index: true, element: <DashboardPage /> },
       { path: "token-management", element: <TokenPage /> }, // Tasks 1,2,3
       { path: "idp-admin", element: <IdpAdminPage /> }, // Tasks 5,7
       { path: "role-proposal", element: <ProposalPage /> }, // Task 9
-      { path: "profile", element: <ProfilePage /> }, // Tasks 4,6
+      { path: "profile-management", element: <ProfilePage /> }, // Tasks 4,6
     ],
   },
 ]);

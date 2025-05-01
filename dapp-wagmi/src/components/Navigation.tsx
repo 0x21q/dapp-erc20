@@ -10,7 +10,7 @@ export default function Navigation() {
         <NavLink to="/token-management" className="nav-link">
           Token Management
         </NavLink>
-        <NavLink to="/profile" className="nav-link">
+        <NavLink to="/profile-management" className="nav-link">
           Profile Page
         </NavLink>
         <NavLink to="/idp-admin" className="nav-link">
