@@ -43,7 +43,13 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
         bool executed;
     }
 
-    event ProposalCreated(uint256 proposalId, bytes32 role, address account, bool isAdd, address proposer);
+    event ProposalCreated(
+        uint256 proposalId,
+        bytes32 role,
+        address account,
+        bool isAdd,
+        address proposer
+    );
     event ProposalApproved(uint256 proposalId, address approver);
     event ProposalExecuted(uint256 proposalId);
     event AddressVerifiedIDP(address indexed account, uint256 timestamp);
@@ -152,10 +158,15 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
     }
 
     // based on the https://solidity-by-example.org/signature/
-    function verifyIdentity(uint256 timestamp, bytes memory signature) external {
+    function verifyIdentity(
+        uint256 timestamp,
+        bytes memory signature
+    ) external {
         require(signature.length == 65, "Invalid signature length");
 
-        bytes32 r; bytes32 s; uint8 v;
+        bytes32 r;
+        bytes32 s;
+        uint8 v;
 
         assembly {
             r := mload(add(signature, 32))
@@ -217,12 +228,21 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
     }
 
     // proposal and voting functions
-    function getProposal(uint256 proposalId) public view returns (Proposal memory) {
+    function getProposal(
+        uint256 proposalId
+    ) public view returns (Proposal memory) {
         return proposals[proposalId];
     }
 
-    function proposeRoleChange(bytes32 role, address account, bool isAdd) external returns (uint256) {
-        require(role == mintingAdmin || role == restrAdmin || role == idpAdmin, "Invalid role");
+    function proposeRoleChange(
+        bytes32 role,
+        address account,
+        bool isAdd
+    ) external returns (uint256) {
+        require(
+            role == mintingAdmin || role == restrAdmin || role == idpAdmin,
+            "Invalid role"
+        );
         require(hasRole(role, msg.sender), "Caller not a role member");
 
         uint proposalID = nextProposalID++;
@@ -258,12 +278,15 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
         require(!proposal.executed, "Proposal already executed");
 
         bytes32 role = proposal.role;
-        require(role == mintingAdmin || role == restrAdmin || role == idpAdmin, "Invalid role"); // maybe not necessary
+        require(
+            role == mintingAdmin || role == restrAdmin || role == idpAdmin,
+            "Invalid role"
+        ); // maybe not necessary
 
         uint256 memberCount = getRoleMemberCount(role);
         require(memberCount > 0, "Role has no members");
 
-        uint256 required = (memberCount / 2) + 1; // maybe (memberCount + 1) / 2
+        uint256 required = (memberCount / 2) + 1;
 
         uint256 validApprovals = 0;
         for (uint i = 0; i < proposal.approvals.length; i++) {
