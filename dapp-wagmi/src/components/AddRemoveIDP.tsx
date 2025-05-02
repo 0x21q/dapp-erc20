@@ -59,6 +59,55 @@ export const AddRemoveIDPComponent = () => {
     }
   };
 
-  // TODO
-  return "";
+  // TODO: show current IDP addresses
+  // getter in contract: address[] public identityProviders;
+
+  return (
+    <>
+    <div className="subsection">
+      <h2>Add identity provider</h2>
+      <form onSubmit={handleAddIdp} className="form">
+        <label>Address of the provider:</label>
+        <input
+          type="text"
+          value={idpAddressAdd}
+          onChange={(e) => setIdpAddressAdd(e.target.value)}
+          className="input-field"
+          required
+        />
+        <button type="submit" disabled={isIdpAddPending} className="button">
+          {isIdpAddPending ? "Adding IDP..." : "Add IDP"}
+        </button>
+        {isIdpAddSuccess && (
+          <div className="success-message">Add IDP request sent successfully!</div>
+        )}
+        {isIdpAddError && (
+          <div className="error-message">Add IDP request failed</div>
+        )}
+      </form>
+    </div>
+    <div className="subsection">
+      <h2>Remove identity provider</h2>
+      <form onSubmit={handleRemoveIdp} className="form">
+        <label>Address of the provider:</label>
+        <input
+          type="text"
+          value={idpAddressRemove}
+          onChange={(e) => setIdpAddressRemove(e.target.value)}
+          className="input-field"
+          required
+        />
+        <button type="submit" disabled={isIdpRemovePending} className="button">
+          {isIdpRemovePending ? "Removing limit..." : "Remove limit"}
+        </button>
+        {isIdpRemoveSuccess && (
+          <div className="success-message">Remove IDP request sent successfully!</div>
+        )}
+        {isIdpRemoveError && (
+          <div className="error-message">Remove IDP request failed</div>
+        )}
+      </form>
+    </div>
+    </>
+  );
 }
