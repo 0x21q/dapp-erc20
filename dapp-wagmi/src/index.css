@@ -47,7 +47,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  margin-top: 30px;
+  margin-top: 10px;
   border-radius: 8px;
 }
 
@@ -77,6 +77,10 @@ body {
   gap: 10px;
 }
 
+.info-box {
+    margin: 15px 0;
+}
+
 .input-field {
   padding: 8px;
   border: 1px solid #ddd;
@@ -94,7 +98,8 @@ body {
   margin: 20px 0;
   color: white;
   background: darkred;
-  border: 1px solid white;
+  border-radius: 8px;
+  text-align: center;
 }
 
 .success-message {
@@ -102,7 +107,8 @@ body {
   margin: 20px 0;
   color: white;
   background: #28a745;
-  border: 1px solid white;
+  border-radius: 8px;
+  text-align: center;
 }
 
 .nav {

@@ -78,7 +78,7 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
     ) ERC20("ERC20BDA", "ERC") ERC20Capped(_maxSupply) {
         require(
             _maxDailyLimit <= _maxSupply,
-            "Maximum daily limit cannot be larger than maximum supply."
+            "Daily limit cannot be larger than maximum supply"
         );
         require(_expirationTimeH > 0, "Expiration time must be greater than 0");
 
@@ -94,7 +94,7 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
         }
 
         // initialize roles
-        grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
 
         for (uint i = 0; i < _mintingAdmins.length; i++) {
             grantRole(mintingAdmin, _mintingAdmins[i]);
@@ -301,7 +301,9 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
         uint256 memberCount = getRoleMemberCount(role);
         require(memberCount > 0, "Role has no members");
 
-        uint256 required = (memberCount / 2) + 1;
+        // note: if the memberCount is 2, both members need to aprove
+        // if there is only single admin set to 1 else calculate
+        uint256 required = (memberCount == 1) ? 1 : (memberCount / 2) + 1;
 
         uint256 validApprovals = 0;
         for (uint i = 0; i < proposal.approvals.length; i++) {
@@ -312,10 +314,11 @@ contract ERC20BDA is ERC20Capped, AccessControlEnumerable {
         require(validApprovals >= required, "Not enough approvals");
 
         // either grant or revoke role based on the proposal
+        // function needs to be internal (any1 can execute this function)
         if (proposal.isAdd) {
-            grantRole(role, proposal.account);
+            _grantRole(role, proposal.account);
         } else {
-            revokeRole(role, proposal.account);
+            _revokeRole(role, proposal.account);
         }
 
         proposal.executed = true; // maybe at the beggining

@@ -16,9 +16,6 @@ export default function Navigation() {
         <NavLink to="/idp-admin" className="nav-link">
           IDP Admin Page
         </NavLink>
-        <NavLink to="/role-proposal" className="nav-link">
-          Role proposals
-        </NavLink>
       </nav>
       <Outlet />
     </div>

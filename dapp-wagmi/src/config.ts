@@ -1,10 +1,9 @@
 import { createConfig, http } from "wagmi";
-import { mainnet, sepolia } from "wagmi/chains";
 import { metaMask } from "wagmi/connectors";
 
-// Define contract address
+// Define contract address (currently localhost contract address)
 export const CONTRACT_ADDRESS =
-  "0x6B175474E89094C44Da98b954EedeAC495271d0F" as `0x${string}`;
+  "0x5FbDB2315678afecb367f032d93F642f64180aa3" as `0x${string}`;
 
 const connector = metaMask({
   dappMetadata: {
@@ -12,11 +11,26 @@ const connector = metaMask({
   },
 });
 
+const anvilChain = {
+    id: 31337,
+    name: "Anvil",
+    network: "anvil",
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: {
+      default: {
+        http: ["http://localhost:8545"],
+      },
+    },
+  };
+
 export const config = createConfig({
-  chains: [mainnet, sepolia],
+  chains: [anvilChain],
   connectors: [connector],
   transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
+    [anvilChain.id]: http()
   },
 });

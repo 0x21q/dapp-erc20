@@ -1,25 +1,22 @@
-import { useState } from "react";
 import {
   useAccount,
   useConnect,
   useDisconnect,
   useBalance,
-  useWriteContract,
 } from "wagmi";
-import { parseUnits, formatUnits } from "viem";
+import { formatUnits } from "viem";
 import { CONTRACT_ADDRESS } from "../config";
-import { erc20BdaAbi } from "../generated";
+import { isUserVerified, getRoleName } from "../components/Roles";
 
 export default function DashboardPage() {
-  const [hasVerifiedAccount] = useState(true);
-
   // wallet hook
   const account = useAccount();
-
   // connect and disconnect to available connectors
   const { connectors, connect, status, error } = useConnect();
   const { disconnect } = useDisconnect();
-
+  // fetch role and verification info
+  let roleName = getRoleName();
+  let { data: hasVerifiedAccount } = isUserVerified();
   // token balance hook
   const { data: tokenBalance } = useBalance({
     address: account.address,
@@ -34,38 +31,15 @@ export default function DashboardPage() {
     ? `${formattedUnits} ${tokenBalance.symbol}`
     : "Not Available";
 
-  // transfer hook
-  const { writeContract, isPending, isError, isSuccess } = useWriteContract();
-
-  // react states
-  const [recipient, setRecipient] = useState("");
-  const [amount, setAmount] = useState("");
-
-  const handleTransfer = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!account.address || !recipient || !amount) return;
-
-    try {
-      // Convert amount to wei (using standard 18 decimal places)
-      writeContract({
-        address: CONTRACT_ADDRESS as `0x${string}`,
-        abi: erc20BdaAbi,
-        functionName: "transfer",
-        args: [recipient as `0x${string}`, parseUnits(amount ,18)],
-      });
-    } catch (error) {
-      console.error("Transfer error:", error);
-    }
-  };
-
   return (
     <div className="container">
       <h1>ERC20 BDA - Dashboard</h1>
-
       {/* acc info subsection */}
       <div className="subsection">
         <h2>Account Information</h2>
         <p>Status: {account.status}</p>
+        <p>Role: {roleName ?? "None"}</p>
+        <p>Verified: {hasVerifiedAccount ? "Yes" : "No"}</p>
         {account.status === "connected" && (
           <>
             <p>Address: {account.address}</p>
@@ -96,38 +70,6 @@ export default function DashboardPage() {
         </div>
         {error && <p className="error-message">Error: {error.message}</p>}
       </div>
-
-      {/* token transfer subsection */}
-      {account.status === "connected" && hasVerifiedAccount && (
-        <div className="subsection">
-          <h2>Token Transfer</h2>
-          <form onSubmit={handleTransfer} className="form">
-            <label className="">Recipient Address:</label>
-            <input
-              type="text"
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              className="input-field"
-              required
-            />
-            <label className="">Amount:</label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="input-field"
-              required
-            />
-            <button type="submit" disabled={isPending} className="button">
-              {isPending ? "Processing..." : "Transfer Tokens"}
-            </button>
-            {isSuccess && (
-              <div className="success-message">Transaction successful</div>
-            )}
-            {isError && <div className="error-message">Transaction failed</div>}
-          </form>
-        </div>
-      )}
     </div>
   );
 }

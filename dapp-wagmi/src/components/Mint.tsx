@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { parseUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { erc20BdaAbi } from "../generated.ts";
 import { useWriteContract, useReadContract } from "wagmi";
 import { CONTRACT_ADDRESS } from "../config.ts";
@@ -54,7 +54,7 @@ export const MintComponent = () => {
     <div className="subsection">
       <h2>Token Minting</h2>
       <div className="info-box">
-        Remaining mintable tokens today: {remainingTokens.toString()}
+        Remaining mintable tokens today: {formatUnits(remainingTokens, 18)}
       </div>
       <form onSubmit={handleMint} className="form">
         <label>Recipient Address:</label>
